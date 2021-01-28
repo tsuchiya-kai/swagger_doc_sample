@@ -4,8 +4,7 @@ on:
     types: [opened, synchronize]
     branches:
       - 'feature/**'
-      - develop
-      - staging
+      - main
 jobs:
   ci:
     runs-on: ${{ matrix.os }}
