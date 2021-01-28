@@ -42,3 +42,5 @@ jobs:
             git commit -m "push diff from GitHub Actions"; \
             git push origin HEAD:${GITHUB_REF}; \
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
