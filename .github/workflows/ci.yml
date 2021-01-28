@@ -30,6 +30,9 @@ jobs:
       - name: Run swagger-ui generate 🍳
         run: yarn swagger:build
 
+      - name: test
+        run: ${echo GITHUB_REF}
+
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
         run: |
