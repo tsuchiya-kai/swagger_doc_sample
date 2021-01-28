@@ -29,10 +29,6 @@ jobs:
 
       - name: Run swagger-ui generate 🍳
         run: yarn swagger:build
-
-      - name: Extract branch name
-        run: $(echo ${GITHUB_REF})
-        id: extract_branch
       
       - name: Test1
         run: echo "${GITHUB_REF#refs/heads/}"
