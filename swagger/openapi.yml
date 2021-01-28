@@ -1,0 +1,95 @@
+openapi: 3.0.5
+info:
+  title: OpenAPIテスト
+  version: 1.0.0
+  description: OpenAPIテスト
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local server
+  - url: https://staging.test.tokyo/api/v1
+    description: Staging server
+security:
+  - bearerAuth: []
+paths:
+  /colors:
+    get:
+      summary: Get colors
+      description: 色一覧を取得
+      responses:
+        200:
+          description: 色一覧を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 200
+                  colors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ColorModel'
+    post:
+      summary: Create color
+      description: 色を作成
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: 赤
+      responses:
+        201:
+          description: 作成した色を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Success
+                  color:
+                    type: object
+                    $ref: '#/components/schemas/ColorModel'
+        400:
+          description: 作成エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Failure
+components:
+  schemas:
+    ColorModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: primary id
+        name:
+          type: string
+          example: 赤
+          description: 名前
+        created_at:
+          type: string
+          example: 2002/05/12 20:30:15
+          description: 作成日
+        updated_at:
+          type: string
+          example: 2002/05/12 20:30:15
+          description: 作成日
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API Key
