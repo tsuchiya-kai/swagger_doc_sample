@@ -1,6 +1,6 @@
 openapi: 3.0.5
 info:
-  title: OpenAPIテスト
+  title: OpenAPIテス
   version: 1.0.0
   description: OpenAPIテスト
 servers:
