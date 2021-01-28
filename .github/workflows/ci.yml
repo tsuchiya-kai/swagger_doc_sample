@@ -30,9 +30,6 @@ jobs:
       - name: Run swagger-ui generate 🍳
         run: yarn swagger:build
 
-      - name: test
-        run: ${echo GITHUB_REF}
-
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
         run: |
@@ -40,10 +37,8 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           echo git diff --shortstat;
-          if (git diff --shortstat | grep '[0-9]'); then \
-            git add .; \
-            git commit -m "push diff from GitHub Actions"; \
-            git push origin HEAD:${GITHUB_REF}; \
-          fi
+          git add .; \
+          git commit -m "push diff from GitHub Actions"; \
+          git push origin HEAD:${GITHUB_REF}; \
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
