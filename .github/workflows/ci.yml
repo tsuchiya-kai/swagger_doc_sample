@@ -27,5 +27,17 @@ jobs:
       - name: Install dependencies 👨🏻‍💻
         run: yarn install
 
-      - name: Run swaggerUI generate 🍳
+      - name: Run swagger-ui generate 🍳
         run: yarn swagger:build
+
+      # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
+      - name: Push diff
+        run: |
+          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "push diff from GitHub Actions"; \
+            git push origin HEAD:${GITHUB_REF}; \
+          fi
