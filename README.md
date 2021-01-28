@@ -1,0 +1,2 @@
+# swagger_doc_sample
+swaggerを使用した仕様書用リポジトリのサンプル
