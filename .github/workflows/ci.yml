@@ -54,10 +54,6 @@ jobs:
         env:
           MATRIX_CONTEXT: ${{ toJson(matrix) }}
         run: echo "$MATRIX_CONTEXT"
-      - name: Dump ref context
-        env:
-          MATRIX_CONTEXT: ${{ toJson(ref) }}
-        run: echo "$GITHUB_REF"
 
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
