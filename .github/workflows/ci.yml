@@ -1,0 +1,43 @@
+name: Build
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - main
+      - 'feature/**'
+      - 'fix/**'
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [14]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies 👨🏻‍💻
+        run: yarn install
+
+      - name: Run swagger-ui generate 🍳
+        run: yarn swagger:build
+
+      # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
+      - name: Push diff
+        run: |
+          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "push diff from GitHub Actions"; \
+            git push origin HEAD:${GITHUB_REF}; \
+          fi
