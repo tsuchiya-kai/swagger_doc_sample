@@ -39,6 +39,5 @@ jobs:
           git add .; \
           git commit -m "push diff from GitHub Actions"; \
           git push origin HEAD:${github.head_ref}; \
-          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
