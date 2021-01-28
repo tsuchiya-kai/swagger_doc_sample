@@ -31,12 +31,14 @@ jobs:
         run: yarn swagger:build
       
 
-      - name: Hello world
-        run: echo "$FIRST_NAME"
-        env:
-          FIRST_NAME: Mona
-          middle_name: The
-          Last_Name: Octocat
+      - name: echo "$GITHUB_REF"
+        run: echo "$GITHUB_REF"
+      - name: echo "$GITHUB_TOKEN"
+        run: echo "$GITHUB_TOKEN"
+      - name: echo "$GITHUB_REPOSITORY"
+        run: echo "$GITHUB_REPOSITORY"
+      - name: echo "$GITHUB_ACTOR"
+        run: echo "$GITHUB_ACTOR"
 
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
