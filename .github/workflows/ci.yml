@@ -36,8 +36,9 @@ jobs:
       
       - name: Test1
         run: echo "${GITHUB_REF#refs/heads/}"
+
       - name: Test2
-      - run: echo "${GITHUB_REF_CONTEXT#refs/heads/}"
+        run: echo "${GITHUB_REF_CONTEXT#refs/heads/}"
 
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
