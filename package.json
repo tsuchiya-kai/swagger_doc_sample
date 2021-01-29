@@ -2,7 +2,7 @@
   "name": "swagger_doc_sample",
   "version": "1.0.0",
   "scripts": {
-    "swagger:build": "redoc-cli bundle swagger/openapi.yml --output docs/swagger.html"
+    "swagger:build": "redoc-cli bundle swagger/openapi.yml --output docs/index.html"
   },
   "devDependencies": {
     "redoc-cli": "^0.10.2"
