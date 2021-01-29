@@ -45,7 +45,6 @@ jobs:
 
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
-        if: $GIT_DIFF
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
@@ -55,4 +54,3 @@ jobs:
           git push origin HEAD:${{ github.head_ref }}; \
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_DIFF: git diff --shortstat
