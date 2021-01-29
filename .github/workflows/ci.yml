@@ -49,9 +49,7 @@ jobs:
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git add .; \
-          git status; \
-          git commit -m 'actionsのテストコミット'; \
-          git push origin feature/enviroment_minimum_configuration_2; \
+          git branch --contains
+          git config --list
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
