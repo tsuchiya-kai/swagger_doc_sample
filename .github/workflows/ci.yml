@@ -47,6 +47,6 @@ jobs:
       - name: Push diff
         run: |
           echo "$GITHUB_REF"
-          echo "github.head_ref"
+          echo "${{ github.head_ref }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
