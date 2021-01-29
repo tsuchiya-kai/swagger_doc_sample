@@ -46,18 +46,7 @@ jobs:
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
         run: |
-          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
-          git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
-          git diff --shortstat; \
-          git status; \
-          git add .; \
-          git commit -m "テスト1 from actions"; \
-          git push origin HEAD:${GITHUB_REF}; \
-          if (git diff --shortstat | grep '[0-9]'); then \
-            git add .; \
-            git commit -m "テスト2 from actions"; \
-            git push origin HEAD:${GITHUB_REF} -f; \
-          fi
+          echo "$GITHUB_REF"
+          echo "github.head_ref"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
