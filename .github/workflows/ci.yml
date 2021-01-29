@@ -51,6 +51,6 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git add .; \
           git commit -m "push diff from GitHub Actions"; \
-          git push origin master:${GITHUB_REF}; \
+          git push origin master:feature/enviroment_minimum_configuration_2; \
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
