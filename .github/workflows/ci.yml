@@ -39,6 +39,8 @@ jobs:
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
 
           git diff --shortstat
+          git diff
+          git ststus
 
           if ( git diff --shortstat | grep '[0-9]' ); then \
               git add .; \
