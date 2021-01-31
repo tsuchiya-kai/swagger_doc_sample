@@ -38,6 +38,7 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
 
+          echo "git diff --shortstat" git diff --shortstat
 
           if ( git diff --shortstat | grep '[0-9]' ); then \
               git add .; \
