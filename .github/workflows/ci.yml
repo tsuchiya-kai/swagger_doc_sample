@@ -42,7 +42,7 @@ jobs:
           git diff
           git status
 
-          if ( git diff --shortstat !== '' ); then \
+          if ( git diff --shortstat | grep [+-]?\d+ ); then \
               git add .; \
               git commit -m 'test from actions'; \
               git push origin HEAD; \
