@@ -42,10 +42,10 @@ jobs:
           git diff
           git status
 
-          if ( git diff --shortstat | grep [+-]?\d+ ); then \
+          if ( git status | grep "nothing" ); then \
+              echo "nothing diff"
+          else
               git add .; \
               git commit -m 'test from actions'; \
               git push origin HEAD; \
-          else
-              echo "nothing diff"
           fi
