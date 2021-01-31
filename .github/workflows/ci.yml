@@ -41,4 +41,10 @@ jobs:
             git add .; \
             git commit -m "👕 Fixed auto-fixable textlint errors by github-actions"; \
             git push origin HEAD:${GITHUB_REF}; \
+          else 
+            echo "noting diff"
+            git add .; \
+            git commit -m "👕 Fixed auto-fixable textlint errors by github-actions"; \
+            git push origin HEAD:${GITHUB_REF}; \
           fi
+
