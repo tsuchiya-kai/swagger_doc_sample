@@ -49,7 +49,7 @@ jobs:
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
-          git pull origin ${{ github.head_ref }} --no-rebase; \
+          git merge --allow-unrelated-histories origin/${{ github.head_ref }}; \
           git add .; \
           git commit -m "テスト from github actions"; \
           git push origin HEAD:${{ github.head_ref }}; \
