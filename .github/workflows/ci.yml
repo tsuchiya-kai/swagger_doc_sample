@@ -33,4 +33,18 @@ jobs:
       - name: Push diff
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./test.sh
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
+          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+
+          git checkout -b master
+          git branch -a
+
+          if ( git diff --shortstat | grep '[0-9]' ); then \
+              git add .; \
+              git commit -m 'test from actions'; \
+              git push origin HEAD; \
+          else
+              echo "nothing diff"
+          fi
