@@ -50,6 +50,7 @@ jobs:
           git remote -v; \
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
+          git config pull.rebase false; \
           git pull origin main; \
           git add .; \
           git commit -m "テスト from github actions"; \
