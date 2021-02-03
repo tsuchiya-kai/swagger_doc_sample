@@ -47,11 +47,11 @@ jobs:
       - name: Push diff
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
-          git remote -v; \
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
           git config pull.rebase false; \
-          git pull origin main; \
+          git fetch origin main; \
+          git merge --allow-unrelated-histories origin/main; \
           git add .; \
           git commit -m "テスト from github actions"; \
           git push origin HEAD:${{ github.head_ref }}; \
