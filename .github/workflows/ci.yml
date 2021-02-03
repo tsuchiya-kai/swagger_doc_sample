@@ -47,6 +47,7 @@ jobs:
       - name: Push diff
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git remote -v; \
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
           git add .; \
