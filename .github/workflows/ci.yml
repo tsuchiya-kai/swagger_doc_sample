@@ -1,11 +1,9 @@
 name: Build
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [closed]
     branches:
       - main
-      - 'feature/**'
-      - 'fix/**'
 jobs:
   ci:
     runs-on: ${{ matrix.os }}
@@ -29,19 +27,6 @@ jobs:
 
       - name: Run swagger-ui generate 🍳
         run: yarn swagger:build
-      
-
-      - name: echo "$GITHUB_REF"
-        run: echo "$GITHUB_REF"
-
-      - name: echo "$GITHUB_TOKEN"
-        run: echo "$GITHUB_TOKEN"
-
-      - name: echo "$GITHUB_REPOSITORY"
-        run: echo "$GITHUB_REPOSITORY"
-        
-      - name: echo "$GITHUB_ACTOR"
-        run: echo "$GITHUB_ACTOR"
 
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
@@ -53,10 +38,10 @@ jobs:
             git fetch origin ${{ github.head_ref }}; \
             git merge --allow-unrelated-histories origin/${{ github.head_ref }}; \
             git add .; \
-            git commit -m "テスト from github actions"; \
+            git commit -m "Added swagger ui static file from github actions"; \
             git push origin HEAD:${{ github.head_ref }}; \
           else
-            echo "Noting to diff!!"
+            echo "No change!!"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
