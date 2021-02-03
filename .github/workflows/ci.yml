@@ -45,15 +45,18 @@ jobs:
 
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
-        if: git diff --shortstat | grep '[0-9]'
         run: |
-          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
-          git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
-          git fetch origin ${{ github.head_ref }}; \
-          git merge --allow-unrelated-histories origin/${{ github.head_ref }}; \
-          git add .; \
-          git commit -m "テスト from github actions"; \
-          git push origin HEAD:${{ github.head_ref }}; \
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+            git config --global user.name "${GITHUB_ACTOR}"
+            git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
+            git fetch origin ${{ github.head_ref }}; \
+            git merge --allow-unrelated-histories origin/${{ github.head_ref }}; \
+            git add .; \
+            git commit -m "テスト from github actions"; \
+            git push origin HEAD:${{ github.head_ref }}; \
+          else
+            echo "Noting to diff!!"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
