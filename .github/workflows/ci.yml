@@ -52,6 +52,6 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
           git add .; \
           git commit -m "テスト from github actions"; \
-          git push origin HEAD:${{ github.head_ref }} -f; \
+          git push origin HEAD:${{ github.head_ref }}; \
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
