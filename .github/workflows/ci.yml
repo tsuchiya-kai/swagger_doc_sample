@@ -29,15 +29,31 @@ jobs:
 
       - name: Run swagger-ui generate 🍳
         run: yarn swagger:build
+      
+
+      - name: echo "$GITHUB_REF"
+        run: echo "$GITHUB_REF"
+
+      - name: echo "$GITHUB_TOKEN"
+        run: echo "$GITHUB_TOKEN"
+
+      - name: echo "$GITHUB_REPOSITORY"
+        run: echo "$GITHUB_REPOSITORY"
+        
+      - name: echo "$GITHUB_ACTOR"
+        run: echo "$GITHUB_ACTOR"
 
       # 参考：https://zenn.dev/lollipop_onl/articles/eoz-gha-push-diffs
       - name: Push diff
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          if (git diff --shortstat | grep '[0-9]'); then \
-            git add .; \
-            git commit -m "push diff from GitHub Actions"; \
-            git push origin HEAD:${GITHUB_REF}; \
-          fi
+          git config --global user.email "${GITHUB_ACTOR}@arsaga.jp"
+          git config pull.rebase false; \
+          git fetch origin ${{ github.head_ref }}; \
+          git merge --allow-unrelated-histories origin/${{ github.head_ref }}; \
+          git add .; \
+          git commit -m "テスト from github actions"; \
+          git push origin HEAD:${{ github.head_ref }}; \
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
