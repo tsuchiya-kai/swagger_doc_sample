@@ -4,6 +4,8 @@ info:
   version: 1.0.0
   description: OpenAPIテスト
 servers:
+  - url: http://localhost:19883/
+    description: Mock server
   - url: http://localhost:3000/api/v1
     description: Local server
   - url: https://staging.test.tokyo/api/v1
