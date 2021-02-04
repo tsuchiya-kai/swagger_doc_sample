@@ -1,3 +1,6 @@
+# swaggerで定義した仕様書の静的ファイルをDocファイルにdistし、GitHubPagesに
+# ホストする内容を常に最新のものに保つためPRがマージされたタイミングで都度buildしpushするという
+# 実装を目指していたが、commit lintで毎回buildすれば良い事に気づいたためこちらのymlは一旦使用しない事とする。
 name: Build
 on:
   pull_request:
