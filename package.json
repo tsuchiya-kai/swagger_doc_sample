@@ -2,9 +2,16 @@
   "name": "swagger_doc_sample",
   "version": "1.0.0",
   "scripts": {
-    "swagger:build": "redoc-cli bundle swagger/openapi.yml --output docs/index.html"
+    "swagger:build": "redoc-cli bundle swagger/openapi.yml --output docs/index.html",
+    "refresh": "yarn cache clean -f && rm -r node_modules package-lock.json && yarn install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn swagger:build && git add ."
+    }
   },
   "devDependencies": {
+    "husky": "^4.3.8",
     "redoc-cli": "^0.10.2"
   }
 }
