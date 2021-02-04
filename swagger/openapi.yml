@@ -17,7 +17,7 @@ paths:
       description: 色一覧を取得
       responses:
         200:
-          description: テスト
+          description: テストだよん
           content:
             application/json:
               schema:
