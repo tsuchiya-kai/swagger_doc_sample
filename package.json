@@ -7,7 +7,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "swagger:build"
+      "pre-commit": "yarn swagger:build && git add ."
     }
   },
   "devDependencies": {
