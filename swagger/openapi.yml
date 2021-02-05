@@ -1,95 +1,827 @@
-openapi: 3.0.5
+openapi: 3.0.1
 info:
-  title: OpenAPIテスト
+  title: 中小企業119
+  description: ' Liff & MessagingAPI'
   version: 1.0.0
-  description: OpenAPIテスト
+externalDocs:
+  description: テーブル定義
+  url: https://docs.google.com/spreadsheets/d/1QTpXwy8V_YQyH5fGEWNaqGk1eHoPAJqREzDj5_gkKSw/edit#gid=0
 servers:
-  - url: http://localhost:3000/api/v1
-    description: Local server
-  - url: https://staging.test.tokyo/api/v1
-    description: Staging server
-security:
-  - bearerAuth: []
+- url: https://sciseed.arsaga.jp/
+- url: http://localhost/
+tags:
+- name: read
+  description: 専門家の既読リスト
+- name: specialist
+  description: 専門家の情報
+- name: project
+  description: 案件・支援に関する情報
+- name: payment
+  description: 謝金に関する情報
 paths:
-  /colors:
+  ## MessagingAPI
+  /read/{specialist_id}:
     get:
-      summary: Get colors
-      description: 色一覧を取得
+      tags:
+      - read
+      summary: 一覧取得API
+      description: "専門家既読リストを取得する"
+      parameters:
+      - in: "path"
+        name: "specialist_id"
+        description: "専門家のID"
+        schema:
+            type: "integer"
+        required: true
       responses:
         200:
-          description: テスト
+          description: "成功時のレスポンス"
           content:
             application/json:
               schema:
-                type: object
+                type: "object"
                 properties:
-                  message:
-                    type: string
+                  code:
+                    type: "integer"
+                    format: "int64"
                     example: 200
-                  colors:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ColorModel'
+                  schedule:
+                    example: []
+                    description: "派遣予定"
+                  finish:
+                    example: []
+                    description: "派遣後、報告書未提出"
+                  payment:
+                    example: ['1','1','1','1']
+                    description: "謝金管理系"
+  /read/update/{specialist_id}&{status}&{id}:
+    get:
+      tags:
+      - read
+      summary: 一覧取得API
+      description: "専門家既読リストを取得する"
+      parameters:
+      - in: "path"
+        name: "specialist_id"
+        description: "専門家のID"
+        schema:
+            type: "integer"
+        required: true
+      - in: "path"
+        name: "status"
+        description: "schedule(派遣予定) or finish(派遣後、報告書未提出) or payment(謝金管理系)"
+        schema:
+            type: "integer"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "既読した内容のid"
+        schema:
+            type: "integer"
+        required: true
+      responses:
+        200:
+          description: "成功時のレスポンス"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                  company_infomation:
+                    example: [
+                        {
+                          value: '郵便番号：00000000',
+                        },
+                        {
+                          value: '郵便番号：00000000',
+                        },
+                        {
+                          value: '郵便番号：00000000',
+                        },
+                        {
+                          value: '郵便番号：00000000',
+                        },
+                    ]
+                    description: "派遣予定"
+  ## 専門家API
+  /specialist/create/:
     post:
-      summary: Create color
-      description: 色を作成
+      tags:
+      - specialist
+      summary: 基本情報登録API
+      description: "専門情報を登録する（＋一時保存）"
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              required:
-                - name
+              type: object
               properties:
-                name:
+                lineUuid:
                   type: string
-                  example: 赤
+                  description: "LINEのUUID"
+                  example: "jfsdhaasdhla;i;hshahvoa;"
+                lastName:
+                  type: string
+                  description: "姓"
+                  example: "山田"
+                farstName:
+                  type: string
+                  description: "名"
+                  example: "太郎"
+                lastNameRuby:
+                  type: string
+                  description: "せい"
+                  example: "やまだ"
+                farstNameRuby:
+                  type: string
+                  description: "めい"
+                  example: "たろう"
+                birthday:
+                  type: string
+                  description: "生年月日"
+                  example: "2020-01-01"
+                componyName:
+                  type: string
+                  description: "会社名（任意）"
+                  example: "株式会社ミラサポ"
+                  nullable: true
+                companyPost:
+                  type: string
+                  description: "役職（任意）"
+                  example: "代表取締役"
+                  nullable: true
+                postalCode:
+                  type: string
+                  description: "郵便番号"
+                  example: "1540002"
+                prefectureId:
+                  type: number
+                  description: "都道府県コード.ID、選択式"
+                  example: 000
+                address1:
+                  type: string
+                  description: "市区町村名"
+                  example: "杉並区"
+                address2:
+                  type: string
+                  description: "番地"
+                  example: "1-1-1"
+                address3:
+                  type: string
+                  description: "建物名"
+                  example: "ミラサポコート"
+                paymentFlag:
+                  type: boolean
+                  description: "支払調書送付先住所 0：異ならない（チェックなし）1：異なる（チェックあり）"
+                  example: 0
+                paymentPostCode:
+                  type: string
+                  description: "郵便番号（支払調書送付先）"
+                  example: ""
+                  nullable: true
+                paymentPrefectureId:
+                  type: number
+                  description: "都道府県コード.ID、選択式"
+                  example: 000
+                  nullable: true
+                paymentAddress1:
+                  type: string
+                  description: "市区町村名"
+                  example: ""
+                  nullable: true
+                paymentAddress2:
+                  type: string
+                  description: "番地"
+                  example: ""
+                  nullable: true
+                paymentAddress3:
+                  type: string
+                  description: "建物名"
+                  example: ""
+                  nullable: true
+                paymentOffice:
+                  type: string
+                  description: "事務所名"
+                  example: ""
+                  nullable: true
+                station:
+                  type: string
+                  description: "最寄り駅等"
+                  example: "ミラサポ駅"
+                tel1:
+                  type: string
+                  description: "電話番号"
+                  example: "12345678901"
+                mail:
+                  type: string
+                  description: "メールアドレス"
+                  example: "12345678901@chusho119.go.jp"
+                url:
+                  type: string
+                  description: "ホームページURL"
+                  example: "https://chusho119.go.jp"
+                  nullable: true
+                bankName:
+                  type: string
+                  description: "金融機関名称"
+                  example: "中小企業119信用金庫"
+                branchName:
+                  type: string
+                  description: "支店名称"
+                  example: "中小企業119支店"
+                branchNumber:
+                  type: string
+                  description: "店番"
+                  example: "012"
+                accountType:
+                  type: number
+                  description: "1：普通、2：当座"
+                  example: 1
+                accountNumber:
+                  type: string
+                  description: "口座番号"
+                  example: "0123456"
+                accountName:
+                  type: string
+                  description: "口座名義_漢字"
+                  example: "山田太郎"
+                accountNameKana:
+                  type: string
+                  description: "口座名義_カナ"
+                  example: "ヤマダタロウ"
+                status:
+                  type: number
+                  description: "1: '未承認',　専門家がLINEより登録"
+                  example: 1
       responses:
-        201:
-          description: 作成した色を返す
+        200:
+          description: "成功時のレスポンス"
           content:
             application/json:
               schema:
-                type: object
+                type: "object"
                 properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                    description: "ステータスコード"
                   message:
-                    type: string
-                    example: Success
-                  color:
-                    type: object
-                    $ref: '#/components/schemas/ColorModel'
-        400:
-          description: 作成エラー
+                    type: "string"
+                    example: ""
+                    description: "メッセージ"
+                  errors:
+                    type: "string"
+                    example: ""
+                    description: "エラーobject or string"
+  /specialist/profile/:
+    post:
+      tags:
+      - specialist
+      summary: 専門家プロフィールAPI
+      description: "専門家プロフィールを登録する（＋一時保存）"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lineUuid:
+                  type: string
+                  description: "LINEのUUID"
+                  example: "jfsdhaasdhla;i;hshahvoa;"
+                authorizationFlag:
+                  type: number
+                  description: "0：認定支援機関ではない（チェックなし）1：認定支援機関である（チェックあり）"
+                  example: 0
+                workContent:
+                  type: string
+                  description: "業務内容"
+                  example: "業務内容"
+                  nullable: true
+                supportResult:
+                  type: string
+                  description: "支援実績"
+                  example: "支援実績"
+                  nullable: true
+                specialistArea:
+                  type: array
+                  items:
+                    type: "object"
+                    properties:
+                      areaId:
+                        type: "integer"
+                        example: 1
+                      prefectureId:
+                        type: "integer"
+                        example: 1
+                specialistIndustryIds:
+                  type: array
+                  items:
+                    type: "number"
+                specialistFieldIds:
+                  type: array
+                  items:
+                    type: "object"
+                    properties:
+                      specialistFieldId:
+                        type: "integer"
+                        example: 1
+                        description: "専門分野マスタ.ID、自由入力の場合はNULLとする"
+                        nullable: true
+                      specialistFieldName:
+                        type: "string"
+                        example: ""
+                        description: "専門分野の自由入力欄に対応"
+                interviewOrganizationId:
+                  type: number
+                  description: "所属等／推薦機関ID（派遣可能機関ID）"
+                  example: 0
+                status:
+                  type: number
+                  description: "1: '未承認',　専門家がLINEより登録"
+                  example: 1
+      responses:
+        200:
+          description: "成功時のレスポンス"
           content:
             application/json:
               schema:
-                type: object
+                type: "object"
                 properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                    description: "ステータスコード"
                   message:
+                    type: "string"
+                    example: ""
+                    description: "メッセージ"
+                  errors:
+                    type: "string"
+                    example: ""
+                    description: "エラーobject or string"
+  /specialist/id_upload/:
+    post:
+      tags:
+      - specialist
+      summary: 身分証明画像送信API
+      description: "身分証明画像を送する（PHP -> s3）"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: array
+                  items:
                     type: string
-                    example: Failure
-components:
-  schemas:
-    ColorModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-          description: primary id
-        name:
-          type: string
-          example: 赤
-          description: 名前
-        created_at:
-          type: string
-          example: 2002/05/12 20:30:15
-          description: 作成日
-        updated_at:
-          type: string
-          example: 2002/05/12 20:30:15
-          description: 作成日
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      description: API Key
+                    format: binary
+      responses:
+        200:
+          description: "成功時のレスポンス"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                    description: "ステータスコード"
+                  message:
+                    type: "string"
+                    example: ""
+                    description: "メッセージ"
+                  errors:
+                    type: "string"
+                    example: ""
+                    description: "エラーobject or string"
+  /specialist/license/:
+    post:
+      tags:
+      - specialist
+      summary: 専門家資格API
+      description: "専門家の所持している資格を情報を管理する"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lineUuid:
+                  type: string
+                  description: "LINEのUUID"
+                  example: "jfsdhaasdhla;i;hshahvoa;"
+                specialistRegisterRequirements:
+                  type: number
+                  description: "専門家登録要件、1から4の数値が入る"
+                  example: 1
+                specialistLicense:
+                  type: array
+                  items:
+                    type: "object"
+                    properties:
+                      licenseId:
+                        type: number
+                        description: "資格マスタ.ID、自由入力の場合はNULLとする"
+                        example: 1
+                      licenseImageName:
+                        type: string
+                        description: "64bitランダム文字列、拡張子も保持する"
+                        example: "dsghjsa.png"
+                      licenseAcquisitionDate:
+                        type: string
+                        description: "資格取得年月日"
+                        example: "2020-01-01"
+                        nullable: true
+                      licenseNumber:
+                        type: string
+                        description: "資格登録番号"
+                        example: "11111111111"
+                        nullable: true
+                otherSpecialistLicense:
+                  type: "object"
+                  properties:
+                      licenseNameText:
+                        type: string
+                        description: "自由入力"
+                        example: ""
+                status:
+                  type: number
+                  description: "1: '未承認',　専門家がLINEより登録"
+                  example: 1
+      responses:
+        200:
+          description: "成功時のレスポンス"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                    description: "ステータスコード"
+                  message:
+                    type: "string"
+                    example: ""
+                    description: "メッセージ"
+                  errors:
+                    type: "string"
+                    example: ""
+                    description: "エラーobject or string"
+  /specialist/me/{lineUuid}:
+    get:
+      tags:
+      - specialist
+      summary: 専門家情報取得API
+      description: "専門家の情報を取得する"
+      parameters:
+      - in: "path"
+        name: "lineUuid"
+        description: "LINEのUUID"
+        example: "jfsdhaasdhla;i;hshahvoa;"
+        schema:
+            type: "string"
+        required: true
+      responses:
+        200:
+          description: "成功時のレスポンス"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                  specialist_id:
+                    type: "integer"
+                    format: "int64"
+                    example: "fdjghsg"
+  ## 案件API
+  /project/{status}/{specialistId}:
+    get:
+      tags:
+      - project
+      summary: 派遣予定一覧取得API
+      description: "案件一覧を取得する"
+      parameters:
+      - in: "path"
+        name: "status"
+        description: "schedule(派遣予定) / finish(報告書未提出・一時保存) / complate(報告書提出済み)"
+        schema:
+            type: "string"
+        required: true
+      - in: "path"
+        name: "specialistId"
+        description: "専門家のID"
+        example: "jfsdhaasdhla;i;hshahvoa;"
+        schema:
+            type: "string"
+        required: true
+      responses:
+        200:
+          description: "成功時のレスポンス"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                  projectList:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        overview:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                              description: "マッチングID"
+                              example: 33333333
+                            planFrom:
+                              type: number
+                              description: "派遣開始予定（unixtime）"
+                              example: 1505454884
+                            planTo:
+                              type: number
+                              description: "派遣終了予定（unixtime）"
+                              example: 1505454884
+                        companyInfo:
+                          type: object
+                          properties:
+                            companyId:
+                              type: string
+                              example: "jadskghs"
+                            companyType:
+                              type: number
+                              example: 1
+                              description: "1：法人、2：個人事業者、3：起業家（創業前）"
+                            corporateNumber:
+                              type: string
+                              example: "jadskghs"
+                              description: "法人番号"
+                            companyName:
+                              type: string
+                              example: "株式会社ミラサポ"
+                              description: "事業者名（法人名／屋号）"
+                            companyNameKana:
+                              type: string
+                              example: "かぶしきがいしゃみらさぽ"
+                              description: "事業者名（法人名／屋号）ひらがな"
+                            postCode:
+                              type: string
+                              example: "0000000"
+                              description: "郵便番号"
+                            address:
+                              type: string
+                              example: "東京都杉並区4-5-6ミラサポ コート１１１号"
+                              description: "郵便番号"
+                            lastName:
+                              type: string
+                              example: "山田"
+                              description: "姓"
+                            firstName:
+                              type: string
+                              example: "太郎"
+                              description: "名"
+                            lastNameKana:
+                              type: string
+                              example: "やまだ"
+                              description: "姓_かな"
+                            firstNameKana:
+                              type: string
+                              example: "やまだ"
+                              description: "名_かな"
+                            tel:
+                              type: number
+                              example: 08012345678
+                              description: "電話番号"
+                            mail:
+                              type: string
+                              example: "やまだ"
+                              description: "kdhsglksa@gmail.com"
+                            industryType:
+                              type: string
+                              example: "農業"
+                              description: "業種"
+                            capitalStock:
+                              type: string
+                              example: "100000"
+                              description: "電話番号"
+                            employeeNumber:
+                              type: string
+                              example: "100000"
+                              description: "従業員数"
+                            businessCategory:
+                              type: string
+                              example: "0"
+                              description: "0：小規模事業者区分でない 1：小規模事業者区分である"
+                            establishDate:
+                              type: number
+                              example: 1505454884
+                              description: "設立年月日（unixtime）"
+                            url:
+                              type: string
+                              example: "https://google.com"
+                              description: "ホームページURL"
+                        projectInfo:
+                          type: object
+                          properties:
+                            companyContactName:
+                              type: string
+                              example: "山田太郎"
+                              description: "企業相談者"
+                            companyContactNameKana:
+                              type: string
+                              example: "やまだたろう"
+                              description: "企業相談者_かな"
+                            companyContactPost:
+                              type: string
+                              example: ""
+                              description: "企業相談者役職"
+                            companyContactTel:
+                              type: string
+                              example: "08012345678"
+                              description: "企業相談者電話番号"
+                            companyContactMail:
+                              type: string
+                              example: "info@gmail.com"
+                              description: "企業相談者メールアドレス"
+                            organizationContactName:
+                              type: string
+                              example: "山田太郎"
+                              description: "支援機関担当者"
+                            organizationContactNameKana:
+                              type: string
+                              example: "やまだたろう"
+                              description: "支援機関担当者"
+                            organizationContactPost:
+                              type: string
+                              example: ""
+                              description: "支援機関担当者役職"
+                            requestTitle:
+                              type: string
+                              example: "ITを活用した経営力強化"
+                              description: "依頼件名"
+                            supportIssue:
+                              type: string
+                              example: "ITを活用した経営力強化"
+                              description: "支援課題"
+                            objective:
+                              type: string
+                              example: "ITを活用した経営力強化"
+                              description: "支援の目的"
+                            onlyTel:
+                              type: string
+                              example: "ITを活用した経営力強化"
+                              description: "0：電話のみで派遣申請ではない 1：電話のみで派遣申請"
+                            startLocation:
+                              type: object
+                              description: "派遣開始場所"
+                              properties:
+                                postCode:
+                                  type: string
+                                  example: "0000000"
+                                  description: "郵便番号"
+                                prefecture:
+                                  type: string
+                                  example: "東京都"
+                                  description: "都道府県"
+                                city:
+                                  type: string
+                                  example: "杉並区"
+                                  description: "市町村"
+                                address1:
+                                  type: string
+                                  example: "4-5-6"
+                                  description: "市町村"
+                                address2:
+                                  type: string
+                                  example: "ミラサポコート111号"
+                                  description: "市町村"
+                            endLocation:
+                              type: object
+                              description: "派遣終了場所"
+                              properties:
+                                postCode:
+                                  type: string
+                                  example: "0000000"
+                                  description: "郵便番号"
+                                prefecture:
+                                  type: string
+                                  example: "東京都"
+                                  description: "都道府県"
+                                city:
+                                  type: string
+                                  example: "杉並区"
+                                  description: "市町村"
+                                address1:
+                                  type: string
+                                  example: "4-5-6"
+                                  description: "市町村"
+                                address2:
+                                  type: string
+                                  example: "ミラサポコート111号"
+                                  description: "市町村"
+                            details:
+                              type: object
+                              properties:
+                                problem:
+                                  type: string
+                                  example: "派遣内容が入ります"
+                                  description: "経営上の問題点・課題"
+                                support:
+                                  type: string
+                                  example: "派遣内容が入ります"
+                                  description: "専門家に求める支援内容"
+  ## 謝金API
+  /payment/{specialistId}:
+    get:
+      tags:
+      - payment
+      summary: 謝金一覧取得API
+      description: "謝金一覧を取得する"
+      parameters:
+      - in: "path"
+        name: "specialistId"
+        description: "専門家のID"
+        example: "jfsdhaasdhla;i;hshahvoa;"
+        schema:
+            type: "string"
+        required: true
+      responses:
+        200:
+          description: "成功時のレスポンス"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  code:
+                    type: "integer"
+                    format: "int64"
+                    example: 200
+                  paymentList:
+                      type: array
+                      items: 
+                        type: object
+                        properties:
+                          overview:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                description: "謝金ID"
+                                example: a095F00003Qq0Ka
+                              paymentDate:
+                                type: number
+                                description: "支払日時（unixtime）"
+                                example: 1505454884
+                          paymentInfo:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                description: "謝金ID"
+                                example: a095F00003Qq0Ka
+                              paymentDate:
+                                type: number
+                                description: "支払日時（unixtime）"
+                                example: 1505454884
+                              achievementDate:
+                                type: number
+                                description: "実績日（unixtime）"
+                                example: 1505454884
+                              payment:
+                                type: number
+                                description: "謝金"
+                                example: 30000
+                              travelCost:
+                                type: number
+                                description: "公共交通機関交通費"
+                                example: 13080
+                              distancerTaveled:
+                                type: number
+                                description: "私有車 移動距離計（km/日）"
+                                example: 131
+       
